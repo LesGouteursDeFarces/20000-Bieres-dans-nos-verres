@@ -1,6 +1,8 @@
 package fr.amu.vingtkbieres.vingtkbieresdansnosverres;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.media.Image;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -17,7 +19,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
+
+import fr.amu.vingtkbieres.vingtkbieresdansnosverres.geolocalisation.MapsActivity;
 
 
 public class mainPage extends ActionBarActivity
@@ -39,12 +44,12 @@ public class mainPage extends ActionBarActivity
 		setContentView(R.layout.activity_main_page);
 
 		mNavigationDrawerFragment = (NavigationDrawerFragment)
-				getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+				getSupportFragmentManager().findFragmentById(R.id.navigation_drawer_main);
 		mTitle = getTitle();
 
 		// Set up the drawer.
 		mNavigationDrawerFragment.setUp(
-				R.id.navigation_drawer,
+				R.id.navigation_drawer_main,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 	}
 
@@ -60,18 +65,21 @@ public class mainPage extends ActionBarActivity
 	public void onSectionAttached(int number) {
 		switch (number) {
 			case 1:
-				mTitle = getString(R.string.title_section1);
+				mTitle = getString(R.string.accueil);
 				break;
 			case 2:
-				mTitle = getString(R.string.title_section2);
+				mTitle = getString(R.string.title_section1);
 				break;
 			case 3:
+				mTitle = getString(R.string.title_section2);
+				break;
+			case 4:
 				mTitle = getString(R.string.title_section3);
 				break;
-			case 4 :
+			case 5 :
 				mTitle = getString(R.string.title_section4);
 				break;
-			case 5 :
+			case 6 :
 				System.exit (0);
 		}
 		restoreActionBar();
@@ -128,6 +136,15 @@ public class mainPage extends ActionBarActivity
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 								 Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_main_page, container, false);
+			ImageButton boutonGeoloc = (ImageButton) rootView.findViewById(R.id.imageBoutonGeoloc);
+			boutonGeoloc.setOnClickListener(new View.OnClickListener()
+			{
+				public void onClick (View v)
+				{
+					Intent intent = new Intent(getActivity(), MapsActivity.class);
+					startActivity(intent);
+				}
+			});
 			return rootView;
 		}
 
