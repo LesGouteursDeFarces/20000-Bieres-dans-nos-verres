@@ -34,6 +34,8 @@ public class Database {
 
     static final private String CODE_ACHIEVEMENT_USER  = "40";
 
+    static final private String CODE_PUB_ALL           = "50";
+
 
     static private String hashSHA_512( String str ) throws NoSuchAlgorithmException{
         String out = "";
@@ -238,6 +240,23 @@ public class Database {
         for( JSONObject obj : data.getData() )
             list.add(new Achievement(c, obj.getString("title_achiev"), obj.getInt("reach_achiev"),
                     obj.getInt("value_progress"), obj.getString("desc_achiev")));
+
+        return list;
+    }
+
+    /* ========= Pub ========== */
+
+    static public List<Pub> loadPub () throws JSONException, JSONDataException {
+        JSONData data = parser.parseFromUrl( generateUrl( CODE_PUB_ALL ) );
+
+        if( !testJSONData( data ) )
+            return null;
+
+        ArrayList<Pub> list = new ArrayList<>();
+
+        for( JSONObject obj : data.getData() )
+            list.add(new Pub(obj.getString("pub_name"), obj.getString("pub_adress"),
+                    obj.getString("pub_city"), obj.getInt("pub_postal_code")));
 
         return list;
     }
