@@ -24,10 +24,11 @@ public class Database {
     static final private String CODE_STYLE_BY_ID       = "0";
     static final private String CODE_STYLE_ALL         = "1";
 
-    static final private String CODE_BEER_BY_ID        = "10";
-    static final private String CODE_BEER_BY_NAME      = "11";
-    static final private String CODE_BEER_BY_STYLE     = "12";
-    static final private String CODE_BEER_BY_BREWERS   = "13";
+    static final private String CODE_BEER_BY_ID                 = "10";
+    static final private String CODE_BEER_BY_NAME               = "11";
+    static final private String CODE_BEER_BY_STYLE              = "12";
+    static final private String CODE_BEER_BY_BREWERS            = "13";
+    static final private String CODE_BEER_BY_STYLE_AND_NAME     = "14";
 
     static final private String CODE_USER_BY_ID        = "20";
     static final private String CODE_USER_CONNECT      = "21";
@@ -67,6 +68,9 @@ public class Database {
         return generateUrl( codeAction, p1, p2, null );
     }
     static private String generateUrl( String codeAction, String p1, String p2, String p3 ){
+        return generateUrl( codeAction, p1, p2, p3, null );
+    }
+    static private String generateUrl( String codeAction, String p1, String p2, String p3, String p4 ){
         String url = BASE_URL + "?action=" + codeAction;
 
         if( p1 != null ){
@@ -75,8 +79,12 @@ public class Database {
             if( p2 != null ){
                 url += "&p2=" + p2;
 
-                if( p3 != null){
+                if( p3 != null ){
                     url += "&p3=" + p3;
+
+                    if( p4 != null ){
+                        url += "&p4=" + p4;
+                    }
                 }
             }
         }
@@ -133,8 +141,8 @@ public class Database {
             return null;
     }
 
-    static public List<Beer> searchBeerByName( String name ) throws JSONException, JSONDataException {
-        JSONData data = parser.parseFromUrl( generateUrl( CODE_BEER_BY_NAME, name ) );
+    static public List<Beer> searchBeerByName( String name, int startLimit, int numberLimit ) throws JSONException, JSONDataException {
+        JSONData data = parser.parseFromUrl( generateUrl( CODE_BEER_BY_NAME, name, String.valueOf( startLimit ), String.valueOf( numberLimit ) ) );
 
         ArrayList<Beer> list = new ArrayList<>();
         for( JSONObject obj : data.getData() ) {
@@ -178,6 +186,24 @@ public class Database {
                     (Float)obj.get( "abv_beer" ), obj.getString( "name_beer" ),
                     obj.getString( "brewers_beer" ), getStyleById( obj.getInt( "style_beer" ) ).text,
                     obj.getString( "address_beer" ) ) );
+        }
+
+        return list;
+    }
+
+    static public List<Beer> searchBeerByStyleAndName( int idStyle, String name, int startLimit, int numberLimit ) throws JSONException, JSONDataException {
+        JSONData data = parser.parseFromUrl( generateUrl( CODE_BEER_BY_STYLE_AND_NAME, String.valueOf(idStyle ), name, String.valueOf( startLimit ), String.valueOf( numberLimit ) ) );
+
+        if( !testJSONData( data ) )
+            return null;
+
+        List<Beer> list = new ArrayList<>();
+        for( JSONObject obj : data.getData() )
+        {
+            list.add( new Beer( obj.getInt("overallScore_beer"), obj.getInt( "styleScore_beer" ),
+                    Float.parseFloat((String) (obj.get( "abv_beer" ))), obj.getString( "name_beer" ),
+                    obj.getString( "brewers_beer" ), getStyleById( obj.getInt( "style_beer" ) ).text,
+                    obj.getString("address_beer") ) );
         }
 
         return list;
