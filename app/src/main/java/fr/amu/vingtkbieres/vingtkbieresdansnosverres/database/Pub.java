@@ -4,10 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Pub implements Parcelable {
-    public final String name;
-    public final String adress;
-    public final String city;
-    public final int postalCode;
+    private final String name;
+    private final String adress;
+    private final String city;
+    private final int postalCode;
 
     public Pub(String name, String adress, String city, int postalCode) {
         this.name = name;
@@ -47,5 +47,21 @@ public class Pub implements Parcelable {
         this.adress = in.readString();
         this.city = in.readString();
         this.postalCode = in.readInt();
+    }
+
+    public final String getName() {
+        return name;
+    }
+
+    public final String getAdress() {
+        return adress;
+    }
+
+    public final String getCity() {
+        return city;
+    }
+
+    public final int getPostalCode() {
+        return postalCode;
     }
 }
