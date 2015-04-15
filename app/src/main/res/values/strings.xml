@@ -3,11 +3,8 @@
     <string name="action_settings">Settings</string>
 
     <string name="global_section_1">Accueil</string>
-    <string name="global_section_2">Mes bières</string>
-    <string name="global_section_3">Mon profil</string>
-    <string name="global_section_4">Aide</string>
-    <string name="global_section_5">Déconnexion</string>
-    <string name="global_section_6">Quitter</string>
+    <string name="global_section_2">Mon Profil</string>
+    <string name="global_section_3">Quitter</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -16,12 +13,13 @@
 
     <string name="app_name">20.000 Bieres Dans Nos Verres</string>
     <string name="title_activity_maps">Geolocalisation</string>
-    <string name="gpsDisable">Your GPS seems to be disabled, do you want to enable it ?</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
+    <string name="gpsDisable">Le GPS ne semble pas être en marche, voulez-vous l\'activer ?</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
     <string name="mes_bieres">Mes bières</string>
+    <string name="mon_profil">Mon Profil</string>
     <string name="achievement">Achievements</string>
-    <string name="title_activity_profil">ProfilActivity</string>
+    <string name="title_activity_profil">Mes Bières</string>
     <string name="title_activity_detail_biere">detailBiere</string>
     <string name="language">fr</string>
     <string name="directionBegin">Calcul de l\'itinéraire</string>
