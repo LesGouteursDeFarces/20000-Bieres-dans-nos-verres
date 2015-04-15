@@ -1,9 +1,9 @@
 package fr.amu.vingtkbieres.vingtkbieresdansnosverres.recherche;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +18,7 @@ import org.json.JSONException;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import fr.amu.vingtkbieres.vingtkbieresdansnosverres.R;
 import fr.amu.vingtkbieres.vingtkbieresdansnosverres.database.Database;
@@ -30,6 +31,16 @@ public class RechercheActivity extends ActionBarActivity {
     ArrayList<CheckBox> checkBox;
 
     private class asyncAllStyle extends AsyncTask< Void, Void, Void >{
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = new ProgressDialog( RechercheActivity.this );
+            progressDialog.setMessage( "Chargement des styles..." );
+            progressDialog.setIndeterminate( true );
+            progressDialog.show();
+        }
+
         @Override
         protected Void doInBackground(Void... params) {
             try {
@@ -46,11 +57,16 @@ public class RechercheActivity extends ActionBarActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            progressDialog.dismiss();
+
             super.onPostExecute(aVoid);
-            if (arrayStyle != null)
-                creerCheckBox();
-            else
+            if (arrayStyle == null) {
                 Toast.makeText(RechercheActivity.this, getString(R.string.internetProblem), Toast.LENGTH_LONG).show();
+                finish();
+            }
+
+            Collections.sort( arrayStyle );
+            creerCheckBox();
         }
     }
 
@@ -62,7 +78,6 @@ public class RechercheActivity extends ActionBarActivity {
 
         final EditText edit = (EditText) findViewById(R.id.editTexteRechercheBiere);
         Button b = (Button) findViewById(R.id.boutonRecherche);
-        b.setBackgroundColor(getBaseContext().getResources().getColor(R.color.yellow));
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
