@@ -1,19 +1,22 @@
 package fr.amu.vingtkbieres.vingtkbieresdansnosverres.recherche;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import org.json.JSONException;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import fr.amu.vingtkbieres.vingtkbieresdansnosverres.R;
@@ -23,66 +26,54 @@ import fr.amu.vingtkbieres.vingtkbieresdansnosverres.database.JSONDataException;
 import fr.amu.vingtkbieres.vingtkbieresdansnosverres.database.Style;
 
 public class ResultatRechercheActivity extends Activity {
-    public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
+    private final int NUMBER_LIMIT = 6;
+
     protected ListView listBiere = null;
-    List<Beer> labelItems = new ArrayList<Beer>();
-    ResultatRechercheAdapter adapter;
-    String nomBiere;
-    ArrayList<Style> styles = new ArrayList<Style>();
+    private List<Beer> labelItems = new ArrayList<Beer>();
+    private ResultatRechercheAdapter adapter;
+    private ArrayList<Style> styles = new ArrayList<Style>();
+    private String nameBeerSearch;
+    private Button moreBtn;
+    private int beginLimit;
 
-    // permet de réaliser la barre d'attente
-    private ProgressDialog mProgressDialog;
+    private class resultTask extends AsyncTask< Void, Void, Void > {
 
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        switch (id) {
-            case DIALOG_DOWNLOAD_PROGRESS:
-                mProgressDialog = new ProgressDialog(this);
-                mProgressDialog.setMessage("Chargement des bières ...");
-                mProgressDialog.setCancelable(true);
-                mProgressDialog.setIndeterminate(true);
-                mProgressDialog.show();
-                return mProgressDialog;
-            default:
-                return null;
-        }
-    }
-
-    private class asyncDbTest extends AsyncTask< Void, Void, Void > {
+        private ProgressDialog progressDialog;
+        List<Beer> tmpBeer;
 
         @Override
         protected void onPreExecute() {
-            super.onPreExecute();
-            showDialog(DIALOG_DOWNLOAD_PROGRESS);
+            progressDialog = new ProgressDialog( ResultatRechercheActivity.this );
+            progressDialog.setMessage( "Recherche des bières..." );
+            progressDialog.setIndeterminate( true );
+            progressDialog.show();
         }
 
         @Override
         protected Void doInBackground(Void... params) {
-            List<Beer> tmpBeer;
             try {
-                if(nomBiere == null)
-                {
-                    for(int i = 0; i < styles.size(); ++i)
-                    {
-                        // place les bières dans un arrayList temporaire
-                        tmpBeer = Database.searchBeerByStyle(styles.get(i).id, 0, 15);
-                        if (tmpBeer != null)
-                        {
-                            for(int j = 0; j < tmpBeer.size(); ++j) {
-                                // ajoute les valeurs petit à petit dans la liste
-                                labelItems.add(tmpBeer.get(j));
-                            }
-                        }
+                for(int i = 0; i < styles.size(); ++i) {
 
-                    }
-                }
-                else if(styles.isEmpty())
-                {
-                    tmpBeer = Database.searchBeerByName(nomBiere);
-                    if(tmpBeer != null)
+                    if( nameBeerSearch == null )
+                        tmpBeer = Database.searchBeerByStyle(styles.get(i).id, beginLimit, NUMBER_LIMIT);
+                    else
+                        tmpBeer = Database.searchBeerByStyleAndName( styles.get(i).id, nameBeerSearch, beginLimit, NUMBER_LIMIT );
+
+                    if (tmpBeer != null)
                     {
                         for(int j = 0; j < tmpBeer.size(); ++j) {
-                            // ajoute les valeurs petit à petit dans la liste
+                            labelItems.add(tmpBeer.get(j));
+                        }
+                    }
+
+                }
+
+                if( styles.isEmpty() ){
+                    tmpBeer = Database.searchBeerByName( nameBeerSearch, beginLimit, NUMBER_LIMIT );
+
+                    if (tmpBeer != null)
+                    {
+                        for(int j = 0; j < tmpBeer.size(); ++j) {
                             labelItems.add(tmpBeer.get(j));
                         }
                     }
@@ -91,14 +82,17 @@ public class ResultatRechercheActivity extends Activity {
                 e.printStackTrace();
             } catch (JSONDataException e) {
                 e.printStackTrace();
+            } catch (UnknownHostException e) {
+                Toast.makeText(getBaseContext(), getBaseContext().getString(R.string.internetProblem), Toast.LENGTH_LONG).show();
+                finish();
             }
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            dismissDialog(DIALOG_DOWNLOAD_PROGRESS);
+            progressDialog.dismiss();
+
             if(labelItems.isEmpty())
             {
                 Toast.makeText(getBaseContext(), "Il n'y à pas de bières associées a cette recherche", Toast.LENGTH_SHORT).show();
@@ -109,9 +103,15 @@ public class ResultatRechercheActivity extends Activity {
                 adapter = new ResultatRechercheAdapter(getBaseContext(),
                         R.layout.list_biere, labelItems);
 
+                Collections.sort( labelItems );
+
                 // Place les éléments
-                //Collections.sort(labelItems, String.CASE_INSENSITIVE_ORDER);
                 listBiere.setAdapter(adapter);
+
+                if( tmpBeer.size() < NUMBER_LIMIT ) {
+                    moreBtn.setEnabled(false);
+                    moreBtn.setText( "Toutes les bières sont là..." );
+                }
             }
         }
     }
@@ -125,14 +125,24 @@ public class ResultatRechercheActivity extends Activity {
             listBiere.setFastScrollEnabled(true);
 
             styles = this.getIntent().getParcelableArrayListExtra("style");
-            nomBiere = this.getIntent().getStringExtra("nom");
+            nameBeerSearch = this.getIntent().getStringExtra( "nameBeer" );
 
-            asyncDbTest asyncTask = new asyncDbTest();
-            asyncTask.execute();
+            beginLimit = 0;
+
+            new resultTask().execute();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        moreBtn = (Button) findViewById( R.id.button_more_beer );
+        moreBtn.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                beginLimit += NUMBER_LIMIT;
+                new resultTask().execute();
+            }
+        });
 
         listBiere.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -145,7 +155,8 @@ public class ResultatRechercheActivity extends Activity {
                 startActivity(detailBiere);
                 onPause();
             };
-        });//onCreate()
+        });
+
     }
 }
 

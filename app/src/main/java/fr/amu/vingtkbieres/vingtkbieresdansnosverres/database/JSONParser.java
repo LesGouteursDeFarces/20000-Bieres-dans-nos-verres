@@ -11,13 +11,14 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.UnknownHostException;
 
 /**
  * Created by legeek on 04/04/15.
  */
 public class JSONParser {
 
-    protected JSONData parseFromUrl( String... url ) {
+    protected JSONData parseFromUrl( String... url ) throws UnknownHostException {
         HttpClient client = new DefaultHttpClient();
         HttpResponse response;
 
@@ -33,9 +34,8 @@ public class JSONParser {
             //System.out.println( object );
             return new JSONData( object.getInt( "code" ), object.getString( "msgError" ), object.getJSONArray( "data" ) );
         }
-        catch ( ClientProtocolException e ){
-            e.printStackTrace();
-            return null;
+        catch ( UnknownHostException e) {
+            throw e;
         }
         catch ( JSONException e ){
             e.printStackTrace();

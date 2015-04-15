@@ -3,10 +3,12 @@ package fr.amu.vingtkbieres.vingtkbieresdansnosverres.database;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Comparator;
+
 /**
  * Created by legeek on 12/03/15.
  */
-public class Beer implements Parcelable{
+public class Beer implements Parcelable, Comparable<Beer>{
     public final int overallScore;
     public final int styleScore;
     public final float abv;
@@ -73,5 +75,10 @@ public class Beer implements Parcelable{
         this.style = in.readString();
         this.address = in.readString();
         this.country = in.readString();
+    }
+
+    @Override
+    public int compareTo(Beer another) {
+        return name.compareTo( another.name );
     }
 }

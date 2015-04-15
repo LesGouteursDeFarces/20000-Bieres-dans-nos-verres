@@ -6,7 +6,7 @@ import android.os.Parcelable;
 /**
  * Created by legeek on 26/03/15.
  */
-public class Style implements Parcelable {
+public class Style implements Parcelable, Comparable<Style> {
     final public int id;
     final public String text;
 
@@ -43,5 +43,10 @@ public class Style implements Parcelable {
     public Style(Parcel in) {
         this.id = in.readInt();
         this.text = in.readString();
+    }
+
+    @Override
+    public int compareTo(Style another) {
+        return text.compareTo( another.text );
     }
 }

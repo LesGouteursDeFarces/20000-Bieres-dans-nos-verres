@@ -1,6 +1,7 @@
 package fr.amu.vingtkbieres.vingtkbieresdansnosverres.secondaire;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,8 +17,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 
+import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -35,11 +38,21 @@ public class AchievementsPage extends Fragment {
     public class AchievementAsyncTask extends AsyncTask<Void, Void, List<Achievement>> {
 
         private Context context;
+        ProgressDialog progressDialog;
 
         public AchievementAsyncTask (Context c)
         {
             context = c;
         }
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = new ProgressDialog( context );
+            progressDialog.setMessage( "Chargement des succès..." );
+            progressDialog.setIndeterminate( true );
+            progressDialog.show();
+        }
+
         @Override
         protected List<Achievement> doInBackground(Void... params) {
             List<Achievement> achievements = null;
@@ -49,12 +62,15 @@ public class AchievementsPage extends Fragment {
                 e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
+            } catch( UnknownHostException e ){
+                e.printStackTrace();
             }
             return achievements;
         }
 
         @Override
         protected void onPostExecute(List<Achievement> achievements) {
+            progressDialog.dismiss();
             if (achievements != null) {
                 layout1.setPadding(10, 10, 0, 0);
                 layout2.setPadding(10, 10, 0, 0);

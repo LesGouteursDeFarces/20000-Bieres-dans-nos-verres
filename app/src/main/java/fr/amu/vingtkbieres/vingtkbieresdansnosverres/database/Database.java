@@ -6,6 +6,7 @@ import android.content.Context;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -22,10 +23,11 @@ public class Database {
     static final private String CODE_STYLE_BY_ID       = "0";
     static final private String CODE_STYLE_ALL         = "1";
 
-    static final private String CODE_BEER_BY_ID        = "10";
-    static final private String CODE_BEER_BY_NAME      = "11";
-    static final private String CODE_BEER_BY_STYLE     = "12";
-    static final private String CODE_BEER_BY_BREWERS   = "13";
+    static final private String CODE_BEER_BY_ID                 = "10";
+    static final private String CODE_BEER_BY_NAME               = "11";
+    static final private String CODE_BEER_BY_STYLE              = "12";
+    static final private String CODE_BEER_BY_BREWERS            = "13";
+    static final private String CODE_BEER_BY_STYLE_AND_NAME     = "14";
 
     static final private String CODE_USER_BY_ID        = "20";
     static final private String CODE_USER_CONNECT      = "21";
@@ -58,15 +60,18 @@ public class Database {
     }
 
     static private String generateUrl( String codeAction ){
-        return generateUrl( codeAction, null, null );
+        return generateUrl( codeAction, null, null, null, null );
     }
     static private String generateUrl( String codeAction, String p1 ){
-        return generateUrl( codeAction, p1, null );
+        return generateUrl( codeAction, p1, null, null, null );
     }
     static private String generateUrl( String codeAction, String p1, String p2 ){
-        return generateUrl( codeAction, p1, p2, null );
+        return generateUrl( codeAction, p1, p2, null, null );
     }
     static private String generateUrl( String codeAction, String p1, String p2, String p3 ){
+        return generateUrl( codeAction, p1, p2, p3, null );
+    }
+    static private String generateUrl( String codeAction, String p1, String p2, String p3, String p4 ){
         String url = BASE_URL + "?action=" + codeAction;
 
         if( p1 != null ){
@@ -75,8 +80,12 @@ public class Database {
             if( p2 != null ){
                 url += "&p2=" + p2;
 
-                if( p3 != null){
+                if( p3 != null ){
                     url += "&p3=" + p3;
+
+                    if( p4 != null ){
+                        url += "&p4=" + p4;
+                    }
                 }
             }
         }
@@ -95,7 +104,7 @@ public class Database {
 
     /* ========== STYLE ========== */
 
-    static public Style getStyleById( int idStyle ) throws JSONException, JSONDataException {
+    static public Style getStyleById( int idStyle ) throws JSONException, JSONDataException, UnknownHostException {
         JSONData data = parser.parseFromUrl( generateUrl( CODE_STYLE_BY_ID, String.valueOf( idStyle ) ) );
 
         if( !testJSONData(data) )
@@ -104,7 +113,7 @@ public class Database {
         return new Style( data.getCode(), data.getData().get(0).getString( "text_style" ) );
     }
 
-    static public ArrayList<Style> getAllStyle() throws JSONException, JSONDataException {
+    static public ArrayList<Style> getAllStyle() throws JSONException, JSONDataException, UnknownHostException {
         JSONData data = parser.parseFromUrl( generateUrl( CODE_STYLE_ALL ) );
 
         if( !testJSONData( data ) )
@@ -121,7 +130,7 @@ public class Database {
 
     /* ========== BEERS ========== */
 
-    static public Beer getBeerById( int id ) throws JSONException, JSONDataException {
+    static public Beer getBeerById( int id ) throws JSONException, JSONDataException, UnknownHostException {
         JSONData data = parser.parseFromUrl( generateUrl( CODE_BEER_BY_ID, String.valueOf(id) ) );
         
         if( testJSONData( data ) )
@@ -133,8 +142,9 @@ public class Database {
             return null;
     }
 
-    static public List<Beer> searchBeerByName( String name ) throws JSONException, JSONDataException {
-        JSONData data = parser.parseFromUrl( generateUrl( CODE_BEER_BY_NAME, name ) );
+    static public List<Beer> searchBeerByName( String name, int startLimit, int numberLimit ) throws JSONException, JSONDataException, UnknownHostException {
+        JSONData data = parser.parseFromUrl( generateUrl( CODE_BEER_BY_NAME, name, String.valueOf( startLimit ), String.valueOf( numberLimit ) ) );
+
 
         ArrayList<Beer> list = new ArrayList<>();
 
@@ -151,7 +161,7 @@ public class Database {
         return list;
     }
 
-    static public List<Beer> searchBeerByStyle( int idStyle, int startLimit, int numberLimit ) throws JSONException, JSONDataException {
+    static public List<Beer> searchBeerByStyle( int idStyle, int startLimit, int numberLimit ) throws JSONException, JSONDataException, UnknownHostException {
         JSONData data = parser.parseFromUrl( generateUrl( CODE_BEER_BY_STYLE, String.valueOf(idStyle ), String.valueOf( startLimit ), String.valueOf( numberLimit ) ) );
 
         if( !testJSONData( data ) )
@@ -169,7 +179,7 @@ public class Database {
         return list;
     }
 
-    static public List<Beer> searchBeerByBrewers( String brewers ) throws JSONException, JSONDataException {
+    static public List<Beer> searchBeerByBrewers( String brewers ) throws JSONException, JSONDataException, UnknownHostException {
         JSONData data = parser.parseFromUrl( generateUrl( CODE_BEER_BY_BREWERS, String.valueOf( brewers ) ) );
 
         if( !testJSONData( data ) )
@@ -187,10 +197,28 @@ public class Database {
         return list;
     }
 
+    static public List<Beer> searchBeerByStyleAndName( int idStyle, String name, int startLimit, int numberLimit ) throws JSONException, JSONDataException, UnknownHostException {
+        JSONData data = parser.parseFromUrl( generateUrl( CODE_BEER_BY_STYLE_AND_NAME, String.valueOf(idStyle ), name, String.valueOf( startLimit ), String.valueOf( numberLimit ) ) );
+
+        if( !testJSONData( data ) )
+            return null;
+
+        List<Beer> list = new ArrayList<>();
+        for( JSONObject obj : data.getData() )
+        {
+            list.add( new Beer( obj.getInt("overallScore_beer"), obj.getInt( "styleScore_beer" ),
+                    Float.parseFloat((String) (obj.get( "abv_beer" ))), obj.getString( "name_beer" ),
+                    obj.getString( "brewers_beer" ), getStyleById( obj.getInt( "style_beer" ) ).text,
+                    obj.getString("address_beer") ) );
+        }
+
+        return list;
+    }
+
 
     /* ========== USER ========== */
 
-    static public User getUserById( int idUser ) throws JSONException, JSONDataException {
+    static public User getUserById( int idUser ) throws JSONException, JSONDataException, UnknownHostException {
         JSONData data = parser.parseFromUrl( generateUrl( CODE_USER_BY_ID, String.valueOf( idUser ) ) );
 
         if( testJSONData( data ) )
@@ -200,7 +228,7 @@ public class Database {
             return null;
     }
 
-    static public int connectUser( String email, String mdp ) throws NoSuchAlgorithmException, JSONDataException, JSONException {
+    static public int connectUser( String email, String mdp ) throws NoSuchAlgorithmException, JSONDataException, JSONException, UnknownHostException {
         mdp = hashSHA_512( mdp );
 
         JSONData data = parser.parseFromUrl( generateUrl( CODE_USER_CONNECT, email, mdp ) );
@@ -215,7 +243,7 @@ public class Database {
 
     /* ========= rate ========== */
 
-    static public List<Rate> getUserRatedBeer( int idUser ) throws JSONException, JSONDataException {
+    static public List<Rate> getUserRatedBeer( int idUser ) throws JSONException, JSONDataException, UnknownHostException {
         JSONData data = parser.parseFromUrl( generateUrl( CODE_RATE_BY_USER, String.valueOf( idUser ) ) );
 
         ArrayList<Rate> list = new ArrayList<>();
@@ -229,7 +257,7 @@ public class Database {
         return list;
     }
 
-    static public List<Achievement> loadAchievements ( int idUser, Context c ) throws JSONException, JSONDataException {
+    static public List<Achievement> loadAchievements ( int idUser, Context c ) throws JSONException, JSONDataException, UnknownHostException {
         JSONData data = parser.parseFromUrl( generateUrl( CODE_ACHIEVEMENT_USER, String.valueOf( idUser ) ) );
 
         ArrayList<Achievement> list = new ArrayList<>();
@@ -246,7 +274,7 @@ public class Database {
 
     /* ========= Pub ========== */
 
-    static public List<Pub> loadPub () throws JSONException, JSONDataException {
+    static public List<Pub> loadPub () throws JSONException, JSONDataException, UnknownHostException {
         JSONData data = parser.parseFromUrl( generateUrl( CODE_PUB_ALL ) );
 
         if( !testJSONData( data ) )

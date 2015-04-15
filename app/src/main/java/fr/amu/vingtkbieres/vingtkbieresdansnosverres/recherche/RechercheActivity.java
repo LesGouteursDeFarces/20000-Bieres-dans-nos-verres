@@ -1,5 +1,6 @@
 package fr.amu.vingtkbieres.vingtkbieresdansnosverres.recherche;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,7 +16,9 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import fr.amu.vingtkbieres.vingtkbieresdansnosverres.R;
 import fr.amu.vingtkbieres.vingtkbieresdansnosverres.database.Database;
@@ -27,7 +30,17 @@ public class RechercheActivity extends ActionBarActivity {
     ArrayList<Style> arrayStyle = new ArrayList<>();
     ArrayList<CheckBox> checkBox;
 
-    private class asyncDbTest extends AsyncTask< Void, Void, Void >{
+    private class asyncAllStyle extends AsyncTask< Void, Void, Void >{
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = new ProgressDialog( RechercheActivity.this );
+            progressDialog.setMessage( "Chargement des styles..." );
+            progressDialog.setIndeterminate( true );
+            progressDialog.show();
+        }
+
         @Override
         protected Void doInBackground(Void... params) {
             try {
@@ -36,17 +49,24 @@ public class RechercheActivity extends ActionBarActivity {
                 e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
             }
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            progressDialog.dismiss();
+
             super.onPostExecute(aVoid);
-            if (arrayStyle != null)
-                creerCheckBox();
-            else
-                Toast.makeText(getBaseContext(), getBaseContext().getString(R.string.internetProblem), Toast.LENGTH_LONG).show();
+            if (arrayStyle == null) {
+                Toast.makeText(RechercheActivity.this, getString(R.string.internetProblem), Toast.LENGTH_LONG).show();
+                finish();
+            }
+
+            Collections.sort( arrayStyle );
+            creerCheckBox();
         }
     }
 
@@ -54,12 +74,10 @@ public class RechercheActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recherche);
 
-        asyncDbTest asyncTask = new asyncDbTest();
-        asyncTask.execute();
+        new asyncAllStyle().execute();
 
         final EditText edit = (EditText) findViewById(R.id.editTexteRechercheBiere);
         Button b = (Button) findViewById(R.id.boutonRecherche);
-        b.setBackgroundColor(getBaseContext().getResources().getColor(R.color.yellow));
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,13 +95,13 @@ public class RechercheActivity extends ActionBarActivity {
                 String nomBiere = edit.getText().toString().trim();
 
                 // rien n'a été selectioné ou rempli dans le champs recherche
-                if(nomBiere.equals("") && styleChoisi.isEmpty())
+                if(nomBiere.isEmpty() && styleChoisi.isEmpty())
                     Toast.makeText(getBaseContext(), "Veuillez choisir des styles de bière ou bien entrer un nom dans la recherche", Toast.LENGTH_SHORT).show();
                 else
                 {
                     // On place les valeurs et l'envoi à resultatRechercheActivity
                     Intent intent = new Intent(RechercheActivity.this, ResultatRechercheActivity.class);
-                    intent.putExtra("nom", nomBiere);
+                    intent.putExtra("nameBeer", nomBiere);
                     intent.putParcelableArrayListExtra("style", styleChoisi);
                     startActivity(intent);
                 }
