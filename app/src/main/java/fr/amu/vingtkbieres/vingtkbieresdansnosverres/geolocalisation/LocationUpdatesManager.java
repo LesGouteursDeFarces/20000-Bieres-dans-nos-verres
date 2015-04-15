@@ -53,12 +53,12 @@ public class LocationUpdatesManager implements LocationListener, GoogleMap.OnMyL
             map.setMyLocation(location);
             map.zoomPosition(map.getMyLocation(), 14);
 
-            PubLoader loader = new PubLoader();
-            loader.execute();
+            //PubLoader loader = new PubLoader();
+            //loader.execute();
 
-            tabPub = loader.getAllPub();
+            //tabPub = loader.getAllPub();
 
-            if(tabPub != null) {
+            if(tabPub.isEmpty()) {
                 for(int i = 0; i < tabPub.size(); ++i) {
                     String name = tabPub.get(i).getName();
                     String adress = tabPub.get(i).getAdress();
