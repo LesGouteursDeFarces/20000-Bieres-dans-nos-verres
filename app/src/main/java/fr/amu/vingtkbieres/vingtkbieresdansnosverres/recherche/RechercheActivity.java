@@ -76,13 +76,13 @@ public class RechercheActivity extends ActionBarActivity {
                 String nomBiere = edit.getText().toString();
 
                 // rien n'a été selectioné ou rempli dans le champs recherche
-                if(nomBiere.equals("null") || styleChoisi.isEmpty())
+                if(nomBiere.isEmpty() && styleChoisi.isEmpty())
                     Toast.makeText(getBaseContext(), "Veuillez choisir des styles de bière ou bien entrer un nom dans la recherche", Toast.LENGTH_SHORT).show();
                 else
                 {
                     // On place les valeurs et l'envoi à resultatRechercheActivity
                     Intent intent = new Intent(RechercheActivity.this, ResultatRechercheActivity.class);
-                    intent.putExtra("nom", nomBiere);
+                    intent.putExtra("beerName", nomBiere);
                     intent.putParcelableArrayListExtra("style", styleChoisi);
                     startActivity(intent);
                 }
