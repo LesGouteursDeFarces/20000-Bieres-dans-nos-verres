@@ -23,8 +23,9 @@
             android:layout_weight="1"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
-            android:padding="20dp"
-            android:src="@drawable/geoloc"/>
+            android:src="@drawable/geoloc"
+            android:background="@color/light_yellow"
+            android:layout_marginRight="10dp"/>
 
         <ImageButton
             android:id="@+id/imageBoutonRecherche"
@@ -33,17 +34,11 @@
             android:layout_weight="1"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
-            android:padding="20dp"
-            android:src="@drawable/recherche"/>
+            android:padding="10dp"
+            android:src="@drawable/recherche"
+            android:background="@color/light_yellow"
+            android:layout_marginLeft="10dp"/>
     </LinearLayout>
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Mes bières"
-        android:id="@+id/myBeersButton"
-        android:layout_below="@+id/boutonMenu"
-        android:layout_centerHorizontal="true"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -54,6 +49,7 @@
         android:gravity="center"
         android:id="@+id/note"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/brown"/>
 
 </RelativeLayout>
