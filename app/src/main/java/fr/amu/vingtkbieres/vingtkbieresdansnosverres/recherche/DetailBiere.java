@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import fr.amu.vingtkbieres.vingtkbieresdansnosverres.R;
@@ -19,8 +20,51 @@ public class DetailBiere extends ActionBarActivity {
 
         biere = getIntent().getExtras().getParcelable("nomBiere");
 
-        TextView textViewBiere = (TextView) findViewById(R.id.idBiere);
-        textViewBiere.setText(biere.name);
+        TextView nom = (TextView) findViewById(R.id.textViewName);
+        nom.setText(biere.name);
+
+        TextView style = (TextView) findViewById(R.id.textViewStyle);
+        style.setText(biere.style);
+
+        TextView overallScore = (TextView) findViewById(R.id.textViewOverallScore);
+        String ovScore = "Score général : ";
+        if (biere.overallScore < 0)
+            ovScore += "Non connu";
+        else
+            ovScore += String.valueOf(biere.overallScore);
+        overallScore.setText(ovScore);
+
+        TextView styleScore = (TextView) findViewById(R.id.textViewStyleScore);
+        String styScore = "Score par style : ";
+        if (biere.styleScore < 0)
+            styScore += "Non connu";
+        else
+            styScore += String.valueOf(biere.styleScore);
+        styleScore.setText(styScore);
+
+        TextView abv = (TextView) findViewById(R.id.textViewAbv);
+        String abvBiere = "Degré d'alcool : ";
+        if (biere.abv < 0)
+            abvBiere += "Non connu";
+        else
+            abvBiere += Float.toString(biere.abv);
+        abv.setText(abvBiere);
+
+        TextView location = (TextView) findViewById(R.id.textViewLocation);
+        location.setText(biere.address +  " " + biere.country);
+
+        String country = biere.country.replaceAll(" ", "_").toLowerCase();
+        int resID = this.getResources().getIdentifier(
+                country , "drawable", this.getPackageName());
+
+        if(resID == 0)
+        {
+            resID = this.getResources().getIdentifier(
+                    "unknown" , "drawable", this.getPackageName());
+        }
+
+        ImageView flagDetail = (ImageView) findViewById(R.id.imageDetailFlag);
+        flagDetail.setImageDrawable(this.getResources().getDrawable(resID));
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,28 +61,39 @@ public class ResultatRechercheActivity extends Activity {
         protected Void doInBackground(Void... params) {
             List<Beer> tmpBeer;
             try {
-                for(int i = 0; i < styles.size(); ++i)
-                {
-                    // place les bières dans un arrayList temporaire
+                for(int i = 0; i < styles.size(); ++i) {
+
                     if( nameBeerSearch == null )
                         tmpBeer = Database.searchBeerByStyle(styles.get(i).id, 0, 15);
                     else
                         tmpBeer = Database.searchBeerByStyleAndName( styles.get(i).id, nameBeerSearch, 0, 15 );
 
-                    for(int j = 0; j < tmpBeer.size(); ++j) {
-                        // ajoute les valeurs petit à petit dans la liste
-                        labelItems.add(tmpBeer.get(j));
+                    if (tmpBeer != null)
+                    {
+                        for(int j = 0; j < tmpBeer.size(); ++j) {
+                            labelItems.add(tmpBeer.get(j));
+                        }
                     }
 
                 }
 
                 if( styles.isEmpty() ){
                     tmpBeer = Database.searchBeerByName( nameBeerSearch, 0, 15 );
+
+                    if (tmpBeer != null)
+                    {
+                        for(int j = 0; j < tmpBeer.size(); ++j) {
+                            labelItems.add(tmpBeer.get(j));
+                        }
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (JSONDataException e) {
                 e.printStackTrace();
+            } catch (UnknownHostException e) {
+                Toast.makeText(getBaseContext(), getBaseContext().getString(R.string.internetProblem), Toast.LENGTH_LONG).show();
+                finish();
             }
             return null;
         }
@@ -117,12 +129,6 @@ public class ResultatRechercheActivity extends Activity {
 
             styles = this.getIntent().getParcelableArrayListExtra("style");
             nameBeerSearch = this.getIntent().getStringExtra( "nameBeer" );
-
-            for (int i =0; i < styles.size(); ++i)
-                System.out.println("Valeur: " + styles.get(i).text);
-
-            if (styles.isEmpty())
-                System.out.println("Styles vide Resultat");
 
             asyncDbTest asyncTask = new asyncDbTest();
             asyncTask.execute();

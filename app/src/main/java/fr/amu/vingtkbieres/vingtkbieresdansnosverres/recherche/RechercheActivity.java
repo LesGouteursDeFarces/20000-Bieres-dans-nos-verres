@@ -3,6 +3,7 @@ package fr.amu.vingtkbieres.vingtkbieresdansnosverres.recherche;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import fr.amu.vingtkbieres.vingtkbieresdansnosverres.R;
@@ -27,15 +29,16 @@ public class RechercheActivity extends ActionBarActivity {
     ArrayList<Style> arrayStyle = new ArrayList<>();
     ArrayList<CheckBox> checkBox;
 
-    private class asyncDbTest extends AsyncTask< Void, Void, Void >{
-        ArrayList<Style> styles;
+    private class asyncAllStyle extends AsyncTask< Void, Void, Void >{
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                styles = new ArrayList<>( Database.getAllStyle() );
+                arrayStyle = Database.getAllStyle();
+            } catch (JSONDataException e) {
+                e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
-            } catch (JSONDataException e) {
+            } catch (UnknownHostException e) {
                 e.printStackTrace();
             }
             return null;
@@ -44,8 +47,10 @@ public class RechercheActivity extends ActionBarActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            arrayStyle = styles;
-            creerCheckBox();
+            if (arrayStyle != null)
+                creerCheckBox();
+            else
+                Toast.makeText(RechercheActivity.this, getString(R.string.internetProblem), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -53,8 +58,7 @@ public class RechercheActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recherche);
 
-        asyncDbTest asyncTask = new asyncDbTest();
-        asyncTask.execute();
+        new asyncAllStyle().execute();
 
         final EditText edit = (EditText) findViewById(R.id.editTexteRechercheBiere);
         Button b = (Button) findViewById(R.id.boutonRecherche);
@@ -65,15 +69,15 @@ public class RechercheActivity extends ActionBarActivity {
                 // array des styles choisi
                 ArrayList<Style> styleChoisi = new ArrayList<Style>();
 
-                for(int i = 0; i < arrayStyle.size(); ++i)
+                for(int i = 1; i < arrayStyle.size(); ++i)
                 {
                     // pour chaque style, s'il est coché on l'ajoute aux styles choisi
-                    if(checkBox.get(i).isChecked()){
+                    if(checkBox.get(i-1).isChecked()){
                         styleChoisi.add(arrayStyle.get(i));
                     }
                 }
                 // récupère le champs de recherche par nom
-                String nomBiere = edit.getText().toString();
+                String nomBiere = edit.getText().toString().trim();
 
                 // rien n'a été selectioné ou rempli dans le champs recherche
                 if(nomBiere.isEmpty() && styleChoisi.isEmpty())
@@ -82,7 +86,7 @@ public class RechercheActivity extends ActionBarActivity {
                 {
                     // On place les valeurs et l'envoi à resultatRechercheActivity
                     Intent intent = new Intent(RechercheActivity.this, ResultatRechercheActivity.class);
-                    intent.putExtra("beerName", nomBiere);
+                    intent.putExtra("nameBeer", nomBiere);
                     intent.putParcelableArrayListExtra("style", styleChoisi);
                     startActivity(intent);
                 }
@@ -95,9 +99,9 @@ public class RechercheActivity extends ActionBarActivity {
         LinearLayout ll = (LinearLayout) findViewById(R.id.rechercheBiere);
 
         // creation des checkBox
-        for(int i = 0; i < arrayStyle.size(); i++){
+        for(int i = 1; i < arrayStyle.size(); i++){
             CheckBox newCheckBox = new CheckBox(this);
-            newCheckBox.setId(i);
+            newCheckBox.setId(i-1);
             newCheckBox.setText(arrayStyle.get(i).text);
 
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,

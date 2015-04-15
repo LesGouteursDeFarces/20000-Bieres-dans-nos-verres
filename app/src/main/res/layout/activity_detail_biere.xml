@@ -19,7 +19,55 @@
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
         android:text="Large Text"
-        android:id="@+id/idBiere"/>
+        android:id="@+id/textViewName"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/textViewStyle"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/textViewName" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/textViewOverallScore"
+        android:layout_below="@+id/textViewStyle" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/textViewStyleScore"
+        android:layout_below="@+id/textViewOverallScore" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/textViewAbv"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_below="@+id/textViewStyleScore" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/textViewLocation"
+        android:layout_below="@+id/textViewAbv" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageDetailFlag"
+        android:layout_marginLeft="15dp"
+        android:layout_alignTop="@+id/textViewLocation"
+        android:layout_toEndOf="@+id/textViewLocation" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -41,6 +89,9 @@
         android:stepSize="1"
         android:rating="3"
         android:layout_above="@+id/editText"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:id="@+id/ratingBar" />
+
+
 
 </RelativeLayout>

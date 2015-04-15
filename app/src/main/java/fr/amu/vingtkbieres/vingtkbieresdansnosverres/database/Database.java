@@ -11,8 +11,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.transform.Result;
-
 /**
  * Created by legeek on 12/03/15.
  */
@@ -36,6 +34,8 @@ public class Database {
     static final private String CODE_RATE_BY_USER      = "30";
 
     static final private String CODE_ACHIEVEMENT_USER  = "40";
+
+    static final private String CODE_PUB_ALL           = "50";
 
 
     static private String hashSHA_512( String str ) throws NoSuchAlgorithmException{
@@ -112,7 +112,7 @@ public class Database {
         return new Style( data.getCode(), data.getData().get(0).getString( "text_style" ) );
     }
 
-    static public List<Style> getAllStyle() throws JSONException, JSONDataException {
+    static public ArrayList<Style> getAllStyle() throws JSONException, JSONDataException {
         JSONData data = parser.parseFromUrl( generateUrl( CODE_STYLE_ALL ) );
 
         if( !testJSONData( data ) )
@@ -145,6 +145,10 @@ public class Database {
         JSONData data = parser.parseFromUrl( generateUrl( CODE_BEER_BY_NAME, name, String.valueOf( startLimit ), String.valueOf( numberLimit ) ) );
 
         ArrayList<Beer> list = new ArrayList<>();
+
+        if( !testJSONData( data ) )
+            return null;
+
         for( JSONObject obj : data.getData() ) {
             list.add(new Beer(obj.getInt("overallScore_beer"), obj.getInt("styleScore_beer"),
                     Float.parseFloat((String) (obj.get( "abv_beer" ))), obj.getString("name_beer"),
@@ -262,6 +266,23 @@ public class Database {
         for( JSONObject obj : data.getData() )
             list.add(new Achievement(c, obj.getString("title_achiev"), obj.getInt("reach_achiev"),
                     obj.getInt("value_progress"), obj.getString("desc_achiev")));
+
+        return list;
+    }
+
+    /* ========= Pub ========== */
+
+    static public List<Pub> loadPub () throws JSONException, JSONDataException {
+        JSONData data = parser.parseFromUrl( generateUrl( CODE_PUB_ALL ) );
+
+        if( !testJSONData( data ) )
+            return null;
+
+        ArrayList<Pub> list = new ArrayList<>();
+
+        for( JSONObject obj : data.getData() )
+            list.add(new Pub(obj.getString("pub_name"), obj.getString("pub_adress"),
+                    obj.getString("pub_city"), obj.getInt("pub_postal_code")));
 
         return list;
     }
