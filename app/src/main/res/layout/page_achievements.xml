@@ -14,10 +14,12 @@
 			style="?android:attr/buttonStyleSmall"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:onClick="switchToMyBeers"
 			android:id="@+id/boutonSwitchMesBieres"
+            android:text="Bières"
+            android:onClick="switchToMyBeers"
             android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"/>
+            android:layout_alignParentLeft="true"
+            android:background="@color/light_yellow"/>
 
 		<TextView
 			android:layout_width="wrap_content"
@@ -35,12 +37,12 @@
             android:layout_marginTop="10dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Unlocked"
+            android:text="Réussis"
             android:id="@+id/textUnlocked"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="0dp"
             />
 
         <GridLayout
@@ -56,12 +58,12 @@
         </GridLayout>
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="In Progress"
+            android:text="En cours"
             android:id="@+id/textInProgress"
-            android:layout_marginBottom="10dp"/>
+            android:layout_marginBottom="0dp"/>
 
         <GridLayout
             android:id="@+id/inProgressLayout"
@@ -70,17 +72,17 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="10dp"
-            android:background="#ffffd115"
+            android:background="@color/yellow"
             android:columnCount="2">
         </GridLayout>
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Locked"
+            android:text="Bloqués"
             android:id="@+id/textLocked"
-            android:layout_marginBottom="10dp"/>
+            android:layout_marginBottom="0dp"/>
 
         <GridLayout
             android:id="@+id/lockedLayout"
@@ -88,7 +90,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:background="#ffd90500"
+            android:background="@color/orange"
             android:columnCount="2">
         </GridLayout>
 
