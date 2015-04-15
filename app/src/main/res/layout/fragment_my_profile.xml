@@ -19,7 +19,8 @@
         android:text="Bières"
         android:onClick="switchToMyBeers"
         android:id="@+id/button_beer_profile"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:background="@color/light_yellow"/>
 
     <LinearLayout
         android:orientation="horizontal"
