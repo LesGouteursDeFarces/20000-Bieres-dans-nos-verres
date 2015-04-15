@@ -7,9 +7,9 @@ public class Pub implements Parcelable {
     public final String name;
     public final String adress;
     public final String city;
-    public final String postalCode;
+    public final int postalCode;
 
-    public Pub(String name, String adress, String city, String postalCode) {
+    public Pub(String name, String adress, String city, int postalCode) {
         this.name = name;
         this.adress = adress;
         this.city = city;
@@ -26,7 +26,7 @@ public class Pub implements Parcelable {
         dest.writeString(name);
         dest.writeString(adress);
         dest.writeString(city);
-        dest.writeString(postalCode);
+        dest.writeInt(postalCode);
     }
 
     public static final Parcelable.Creator<Pub> CREATOR = new Parcelable.Creator<Pub>()
@@ -46,6 +46,6 @@ public class Pub implements Parcelable {
         this.name = in.readString();
         this.adress = in.readString();
         this.city = in.readString();
-        this.postalCode = in.readString();
+        this.postalCode = in.readInt();
     }
 }
