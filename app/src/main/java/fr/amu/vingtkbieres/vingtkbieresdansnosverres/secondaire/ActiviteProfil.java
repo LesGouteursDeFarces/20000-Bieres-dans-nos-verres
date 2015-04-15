@@ -30,6 +30,7 @@ public class ActiviteProfil extends ActionBarActivity {
 		List fragments = new Vector();
 
 		// Ajout des Fragments dans la liste
+        fragments.add( Fragment.instantiate( this, MyProfile.class.getName()) );
 		fragments.add(Fragment.instantiate(this, MyBeersPage.class.getName()));
 		fragments.add(Fragment.instantiate(this,AchievementsPage.class.getName()));
 
@@ -43,13 +44,17 @@ public class ActiviteProfil extends ActionBarActivity {
 		mPager.setAdapter(this.mPagerAdapter);
 	}
 
-	public void swithToAchiev (View v) {
+    public void swithToProfil (View v) {
+        mPager.setCurrentItem(0);
+    }
+
+	public void switchToMyBeers(View v) {
 		mPager.setCurrentItem(1);
 	}
 
-	public void switchToMyBeers(View v) {
-		mPager.setCurrentItem(0);
-	}
+    public void swithToAchiev (View v) {
+        mPager.setCurrentItem(2);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
