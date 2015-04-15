@@ -9,6 +9,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/mon_profil"
         android:layout_centerHorizontal="true"
+        android:textColor="@color/brown"
         />
 
     <Button

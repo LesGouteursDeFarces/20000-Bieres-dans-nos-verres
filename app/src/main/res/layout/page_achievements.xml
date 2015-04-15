@@ -27,6 +27,7 @@
 			android:textAppearance="?android:attr/textAppearanceLarge"
 			android:text="@string/achievement"
             android:layout_centerHorizontal="true"
+            android:textColor="@color/brown"
             />
 
 	</RelativeLayout>

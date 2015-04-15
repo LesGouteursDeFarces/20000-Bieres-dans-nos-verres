@@ -16,6 +16,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@string/mes_bieres"
             android:layout_centerHorizontal="true"
+            android:textColor="@color/brown"
             />
 
         <Button
