@@ -1,12 +1,24 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="fill_parent"
     android:layout_height="fill_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    tools:context="fr.amu.vingtkbieres.vingtkbieresdansnosverres.recherche.ResultatRechercheActivity">
+    tools:context="fr.amu.vingtkbieres.vingtkbieresdansnosverres.recherche.ResultatRechercheActivity"
+    android:orientation="vertical">
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Plus de bières !"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:background="@color/light_yellow"
+        android:id="@+id/button_more_beer"/>
 
     <ListView
         android:id="@+id/listBiere"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
-    </ListView>
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_above="@id/button_more_beer"/>
+
 
 </RelativeLayout>
