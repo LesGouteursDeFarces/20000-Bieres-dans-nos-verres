@@ -28,6 +28,7 @@ public class ResultatRechercheActivity extends Activity {
     List<Beer> labelItems = new ArrayList<Beer>();
     ResultatRechercheAdapter adapter;
     ArrayList<Style> styles = new ArrayList<Style>();
+    String nameBeerSearch;
 
     // permet de réaliser la barre d'attente
     private ProgressDialog mProgressDialog;
@@ -62,13 +63,20 @@ public class ResultatRechercheActivity extends Activity {
                 for(int i = 0; i < styles.size(); ++i)
                 {
                     // place les bières dans un arrayList temporaire
-                    tmpBeer = Database.searchBeerByStyle(styles.get(i).id, 0, 15);
+                    if( nameBeerSearch == null )
+                        tmpBeer = Database.searchBeerByStyle(styles.get(i).id, 0, 15);
+                    else
+                        tmpBeer = Database.searchBeerByStyleAndName( styles.get(i).id, nameBeerSearch, 0, 15 );
 
                     for(int j = 0; j < tmpBeer.size(); ++j) {
                         // ajoute les valeurs petit à petit dans la liste
                         labelItems.add(tmpBeer.get(j));
                     }
 
+                }
+
+                if( styles.isEmpty() ){
+                    tmpBeer = Database.searchBeerByName( nameBeerSearch, 0, 15 );
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -108,6 +116,7 @@ public class ResultatRechercheActivity extends Activity {
             listBiere.setFastScrollEnabled(true);
 
             styles = this.getIntent().getParcelableArrayListExtra("style");
+            nameBeerSearch = this.getIntent().getStringExtra( "nameBeer" );
 
             for (int i =0; i < styles.size(); ++i)
                 System.out.println("Valeur: " + styles.get(i).text);
