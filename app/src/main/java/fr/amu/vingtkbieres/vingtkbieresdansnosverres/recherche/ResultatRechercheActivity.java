@@ -95,7 +95,7 @@ public class ResultatRechercheActivity extends Activity {
 
             if(labelItems.isEmpty())
             {
-                Toast.makeText(getBaseContext(), "Il n'y à pas de bières associées a cette recherche", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), "Il n'y a pas de bière associée à cette recherche", Toast.LENGTH_SHORT).show();
                 finish();
             }
             else
