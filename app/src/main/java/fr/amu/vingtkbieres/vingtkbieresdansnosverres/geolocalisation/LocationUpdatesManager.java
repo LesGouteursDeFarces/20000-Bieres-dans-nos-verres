@@ -58,7 +58,7 @@ public class LocationUpdatesManager implements LocationListener, GoogleMap.OnMyL
 
             //tabPub = loader.getAllPub();
 
-            if(tabPub.isEmpty()) {
+            if(!tabPub.isEmpty()) {
                 for(int i = 0; i < tabPub.size(); ++i) {
                     String name = tabPub.get(i).getName();
                     String adress = tabPub.get(i).getAdress();
@@ -86,8 +86,16 @@ public class LocationUpdatesManager implements LocationListener, GoogleMap.OnMyL
             }
             else {
                 // Create marker test without database
-                map.addMarkerFromAdress("413 Avenue Gaston Berger 13625 Aix-en-Provence", "IUT AIX", MyMarker.COLOR_RED);
-                map.addMarkerFromAdress("Marseille", "Marseille", MyMarker.COLOR_RED);
+                map.addMarkerFromAdress("30 rue de la Verrerie 13100 Aix-en-Provence", "O Shannon", MyMarker.COLOR_RED);
+                map.addMarkerFromAdress("13 Cours Sextius 13100 Aix-en-Provence", "Le Sextius Bar", MyMarker.COLOR_RED);
+                map.addMarkerFromAdress("17 place Richelme 13100 Aix-en-Provence", "Le Brigand", MyMarker.COLOR_RED);
+                map.addMarkerFromAdress("25 rue de la Verrerie 13100 Aix-en-Provence", "Le Manoir", MyMarker.COLOR_RED);
+                map.addMarkerFromAdress("25 Rue du Bon Pasteur 13100 Aix-en-Provence", "L’Unplugged", MyMarker.COLOR_RED);
+                map.addMarkerFromAdress("176 bd Chave 13005 Marseille", "The Black Unicorn", MyMarker.COLOR_RED);
+                map.addMarkerFromAdress("17 quai de Rive Neuve 13007 Marseille", "The Shamrock", MyMarker.COLOR_RED);
+                map.addMarkerFromAdress("7 rue de la Paix Marcel Paul 13001 Marseille", "Little Temple Bar", MyMarker.COLOR_RED);
+                map.addMarkerFromAdress("127 rue Sainte 13007 Marseille", "U-percut", MyMarker.COLOR_RED);
+                map.addMarkerFromAdress("378 ave de Mazargues 13008 Marseille", "O’Brady’s Irish Pub", MyMarker.COLOR_RED);
             }
         }
     }
